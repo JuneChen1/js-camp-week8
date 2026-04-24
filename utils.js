@@ -65,11 +65,11 @@ function validateOrderUser(data) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const validPayment = ['ATM', 'Credit Card', 'Apple Pay'];
 
-  if (!name || name.trim().length === 0) errors.push('name: 不可為空');
-  if (!telRegex.test(tel)) errors.push('tel: 必須是 09 開頭的 10 位數字');
+  if (!name || name.trim().length === 0) errors.push('姓名不可為空');
+  if (!telRegex.test(tel)) errors.push('電話必須是 09 開頭的 10 位數字');
   if (!emailRegex.test(email)) errors.push('email 格式錯誤');
-  if (!address || address.trim().length === 0) errors.push('address: 不可為空');
-  if (!validPayment.includes(payment)) errors.push(`payment: 必須是 ${validPayment.join(', ')} 其中之一`);
+  if (!address || address.trim().length === 0) errors.push('地址不可為空');
+  if (!validPayment.includes(payment)) errors.push(`付款方式必須是 ${validPayment.join(', ')} 其中之一`);
 
   return { isValid: errors.length === 0, errors };
 }
