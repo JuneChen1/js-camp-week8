@@ -56,7 +56,7 @@ async function addToCart(productId, quantity) {
 
     return response.data;
   } catch (error) {
-    console.error(error.response.data);
+    throw error;
   }
 }
 
@@ -74,7 +74,7 @@ async function updateCartItem(cartId, quantity) {
 
     return response.data;
   } catch (error) {
-    console.error(error.response.data);
+    throw error;
   }
 }
 
@@ -88,7 +88,7 @@ async function deleteCartItem(cartId) {
     const response = await apiClient.delete(`/carts/${cartId}`);
     return response.data;
   } catch (error) {
-    console.error(error.response.data);
+    throw error;
   }
 }
 
@@ -101,7 +101,7 @@ async function clearCart() {
     const response = await apiClient.delete('/carts');
     return response.data;
   } catch (error) {
-    console.error(error.response.data);
+    throw error;
   }
 }
 
@@ -177,7 +177,7 @@ async function updateOrderStatus(orderId, isPaid) {
 async function deleteOrder(orderId) {
   try {
     const response = await apiAdmin.delete(`/orders/${orderId}`);
-    return response.data.orders;
+    return response.data;
   } catch (error) {
     console.error(error.response.data);
   }

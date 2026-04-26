@@ -10,8 +10,8 @@ const { validateCartQuantity, formatCurrency } = require('../utils');
  * @returns {Promise<Object>}
  */
 async function getCart() {
-  // 請實作此函式
-  // 提示：呼叫 fetchCart() 取得購物車資料並回傳
+  const cart = await fetchCart();
+  return cart
 }
 
 /**
@@ -21,10 +21,15 @@ async function getCart() {
  * @returns {Promise<Object>}
  */
 async function addProductToCart(productId, quantity) {
-  // 請實作此函式
-  // 提示：先用 utils validateCartQuantity() 驗證數量，驗證失敗時回傳 { success: false, error: ... }
-  // 驗證通過後，呼叫 addToCart() 加入購物車
-  // 使用 try/catch 處理錯誤，回傳格式：{ success: true, data: ... } / { success: false, error: ... }
+  const validQuantity = validateCartQuantity(quantity);
+  if (!validQuantity.isValid) return {success: false, error: validQuantity.error};
+
+  try {
+    const addResult = await addToCart();
+    return {success: true, data: addResult};
+  } catch(error) {
+    return {success: false, error: error.response.data};
+  }
 }
 
 /**
@@ -34,10 +39,15 @@ async function addProductToCart(productId, quantity) {
  * @returns {Promise<Object>}
  */
 async function updateProduct(cartId, quantity) {
-  // 請實作此函式
-  // 提示：先用 utils validateCartQuantity() 驗證數量，驗證失敗時回傳 { success: false, error: ... }
-  // 驗證通過後，呼叫 updateCartItem() 更新數量
-  // 使用 try/catch 處理錯誤，回傳格式：{ success: true, data: ... } / { success: false, error: ... }
+  const validQuantity = validateCartQuantity(quantity);
+  if (!validQuantity.isValid) return {success: false, error: validQuantity.error};
+
+  try {
+    const updateResult = await updateCartItem(cartId, quantity);
+    return {success: true, data: updateResult};
+  } catch(error) {
+    return {success: false, error: error.response.data};
+  }
 }
 
 /**
@@ -46,9 +56,12 @@ async function updateProduct(cartId, quantity) {
  * @returns {Promise<Object>}
  */
 async function removeProduct(cartId) {
-  // 請實作此函式
-  // 提示：呼叫 deleteCartItem()，使用 try/catch 處理錯誤
-  // 回傳格式：{ success: true, data: ... } / { success: false, error: ... }
+  try {
+    const deleteResult = await deleteCartItem(cartId);
+    return {success: true, data: deleteResult};
+  } catch(error) {
+    return {success: false, error: error.response.data};
+  }
 }
 
 /**
@@ -56,9 +69,12 @@ async function removeProduct(cartId) {
  * @returns {Promise<Object>}
  */
 async function emptyCart() {
-  // 請實作此函式
-  // 提示：呼叫 clearCart()，使用 try/catch 處理錯誤
-  // 回傳格式：{ success: true, data: ... } / { success: false, error: ... }
+  try {
+    const clearResult = await clearCart();
+    return {success: true, data: clearResult};
+  } catch(error) {
+    return {success: false, error: error.response.data};
+  }
 }
 
 /**
@@ -66,9 +82,10 @@ async function emptyCart() {
  * @returns {Promise<Object>}
  */
 async function getCartTotal() {
-  // 請實作此函式
-  // 提示：呼叫 fetchCart() 取得購物車資料
-  // 回傳格式：{ total: 原始金額, finalTotal: 折扣後金額, itemCount: 商品筆數 }
+  const cart = await fetchCart();
+  const {carts, total, finalTotal} = cart;
+    
+  return {total, finalTotal, itemCount: carts.length};
 }
 
 /**
@@ -76,20 +93,33 @@ async function getCartTotal() {
  * @param {Object} cart - 購物車資料
  */
 function displayCart(cart) {
-  // 請實作此函式
-  // 提示：先判斷購物車是否為空（cart.carts 不存在或長度為 0），若空則輸出「購物車是空的」
-  // 會使用到 utils formatCurrency() 來格式化金額
-  //
-  // 預期輸出格式：
-  // 購物車內容：
-  // ----------------------------------------
-  // 1. 產品名稱
-  //    數量：2
-  //    單價：NT$ 800
-  //    小計：NT$ 1,600
-  // ----------------------------------------
-  // 商品總計：NT$ 1,600
-  // 折扣後金額：NT$ 1,600
+  const cartItems = cart.carts;
+  if (!cartItems || cartItems.length === 0) return '購物車是空的';
+
+  const divider = '----------------------------------------';
+  const itemList = [];
+
+  cartItems.forEach((item, index) => {
+    const title = item.product.title;
+    const price = item.product.origin_price;
+    const quantity = item.quantity;
+
+    itemList.push(`${index + 1}. ${title}
+   數量：${quantity}
+   單價：${formatCurrency(price)}
+   小計：${formatCurrency(quantity * price)}`);
+  })
+
+  const result = [
+    '購物車內容：',
+    divider,
+    itemList.join(`\n${divider}\n`),
+    divider,
+    `商品總計：${formatCurrency(cart.total)}`,
+    `折扣後金額：${formatCurrency(cart.finalTotal)}`
+  ].join('\n');
+
+  return result
 }
 
 module.exports = {
