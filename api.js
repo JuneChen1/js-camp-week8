@@ -121,7 +121,7 @@ async function createOrder(userInfo) {
 
     return response.data;
   } catch (error) {
-    console.error(error.response.data);
+    throw error;
   }
 }
 
@@ -165,7 +165,7 @@ async function updateOrderStatus(orderId, isPaid) {
 
     return response.data;
   } catch (error) {
-    console.error(error.response.data);
+    throw error;
   }
 }
 
@@ -179,7 +179,7 @@ async function deleteOrder(orderId) {
     const response = await apiAdmin.delete(`/orders/${orderId}`);
     return response.data;
   } catch (error) {
-    console.error(error.response.data);
+    throw error;
   }
 }
 
