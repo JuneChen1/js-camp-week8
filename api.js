@@ -23,7 +23,7 @@ async function fetchProducts() {
     const response = await apiClient.get('/products');
     return response.data.products;
   } catch (error) {
-    console.error(error.response.data);
+    console.error(error.message);
   }
 }
 
@@ -38,7 +38,7 @@ async function fetchCart() {
     
     return {carts, total, finalTotal};
   } catch (error) {
-    console.error(error.response.data);
+    console.error(error.message);
   }
 }
 
@@ -144,7 +144,7 @@ async function fetchOrders() {
     const response = await apiAdmin.get('/orders');
     return response.data.orders;
   } catch (error) {
-    console.error(error.response.data);
+    console.error(error.message);
   }
 }
 

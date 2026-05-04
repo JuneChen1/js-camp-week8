@@ -16,9 +16,9 @@ async function placeOrder(userInfo) {
 
   try{
     const createResult = await createOrder(userInfo);
-    return {success: true, data: createResult};
+    return { success: true, data: createResult };
   } catch(error) {
-    return {success: false, error: error.response.data};
+    return { success: false, errors: [error.message] };
   }
 }
 
@@ -60,7 +60,7 @@ async function updatePaymentStatus(orderId, isPaid) {
     const updateResult = await updateOrderStatus(orderId, isPaid);
     return { success: true, data: updateResult };
   } catch(error) {
-    return {success: false, error: error.response.data};
+    return { success: false, error: error.message };
   }
 }
 
@@ -74,7 +74,7 @@ async function removeOrder(orderId) {
     const removeResult = await deleteOrder(orderId);
     return { success: true, data: removeResult };
   } catch(error) {
-    return {success: false, error: error.response.data};
+    return { success: false, error: error.message };
   }
 }
 

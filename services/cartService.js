@@ -25,10 +25,10 @@ async function addProductToCart(productId, quantity) {
   if (!validQuantity.isValid) return {success: false, error: validQuantity.error};
 
   try {
-    const addResult = await addToCart();
+    const addResult = await addToCart(productId, quantity);
     return {success: true, data: addResult};
   } catch(error) {
-    return {success: false, error: error.response.data};
+    return {success: false, error: error.message};
   }
 }
 
@@ -46,7 +46,7 @@ async function updateProduct(cartId, quantity) {
     const updateResult = await updateCartItem(cartId, quantity);
     return {success: true, data: updateResult};
   } catch(error) {
-    return {success: false, error: error.response.data};
+    return {success: false, error: error.message};
   }
 }
 
@@ -60,7 +60,7 @@ async function removeProduct(cartId) {
     const deleteResult = await deleteCartItem(cartId);
     return {success: true, data: deleteResult};
   } catch(error) {
-    return {success: false, error: error.response.data};
+    return {success: false, error: error.message};
   }
 }
 
@@ -73,7 +73,7 @@ async function emptyCart() {
     const clearResult = await clearCart();
     return {success: true, data: clearResult};
   } catch(error) {
-    return {success: false, error: error.response.data};
+    return {success: false, error: error.message};
   }
 }
 
@@ -101,7 +101,7 @@ function displayCart(cart) {
 
   cartItems.forEach((item, index) => {
     const title = item.product.title;
-    const price = item.product.origin_price;
+    const price = item.product.price;
     const quantity = item.quantity;
 
     itemList.push(`${index + 1}. ${title}
